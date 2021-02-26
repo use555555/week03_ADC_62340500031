@@ -51,7 +51,10 @@ typedef struct
 	uint32_t Data;
 } ADCStructure;
 
-ADCStructure ADCChannel[3] ={0};
+GPIO_PinState ButtonState[2] = {0};
+ADCStructure ADCChannel[2] ={0};
+float ADCOutputConverted = 0;
+int ADCMode = 0;
 
 /* USER CODE END PV */
 
@@ -62,7 +65,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
 void ADCPollingMethodInit();   //Init Config of ADC 3 Scouce
-void ADCPollingMethodUpdate(); //Read ADC From 3 Source(In0,In1,Temp)
+void ADCPollingMethodUpdate(int i); //Read ADC From 3 Source(In0,In1,Temp)
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,17 +105,47 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   ADCPollingMethodInit();
+
+  float VoltageRef = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //Button Press
+	  ButtonState[0] = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+	  if(ButtonState[0] == GPIO_PIN_RESET && ButtonState[1] == GPIO_PIN_SET)
+	  {
+		  if(ADCMode == 1)
+		  {
+			  ADCMode = 0;
+			  ADCChannel[1].Data = 0;
+		  }
+		  else
+		  {
+			  ADCMode = 1;
+			  ADCChannel[0].Data = 0;
+		  }
+	  }
+	  ButtonState[1] = ButtonState[0];
 	  //read analog
-	  ADCPollingMethodUpdate();
+	  ADCPollingMethodUpdate(ADCMode);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  //Voltage calculation from ADC resolution
+	  VoltageRef = ADCChannel[ADCMode].Data *0.80566;
+	  //Output
+	  if(ADCMode == 0)
+	  {
+		  ADCOutputConverted = VoltageRef;
+	  }
+	  else
+	  {
+		  ADCOutputConverted = ((VoltageRef - 760)/2.5) + 25;
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -284,32 +317,26 @@ void ADCPollingMethodInit()
 	ADCChannel[0].Config.Channel = ADC_CHANNEL_0;
 	ADCChannel[0].Config.Rank = 1;
 	ADCChannel[0].Config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-	//PA1 - ADC IN1
-	ADCChannel[1].Config.Channel = ADC_CHANNEL_1;
+	//Temp
+	ADCChannel[1].Config.Channel = ADC_CHANNEL_TEMPSENSOR;
 	ADCChannel[1].Config.Rank = 1;
 	ADCChannel[1].Config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-	//Temp
-	ADCChannel[2].Config.Channel = ADC_CHANNEL_TEMPSENSOR;
-	ADCChannel[2].Config.Rank = 1;
-	ADCChannel[2].Config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
 }
-void ADCPollingMethodUpdate()
+void ADCPollingMethodUpdate(int i)
 {
-	for(int i = 0; i<3 ; i++)
+	//select channel
+	HAL_ADC_ConfigChannel(&hadc1, &ADCChannel[i].Config);
+	//ADC Sampling, Convert
+	HAL_ADC_Start(&hadc1);
+	//Wait ADC
+	if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
 	{
-		//select channel
-		HAL_ADC_ConfigChannel(&hadc1, &ADCChannel[i].Config);
-		//ADC Sampling, Convert
-		HAL_ADC_Start(&hadc1);
-		//Wait ADC
-		if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
-		{
-			//Get Value
-			ADCChannel[i].Data = HAL_ADC_GetValue(&hadc1);
-		}
-		//Stop
-		HAL_ADC_Stop(&hadc1);
+		//Get Value
+		ADCChannel[i].Data = HAL_ADC_GetValue(&hadc1);
 	}
+	//Stop
+	HAL_ADC_Stop(&hadc1);
+
 }
 /* USER CODE END 4 */
 
