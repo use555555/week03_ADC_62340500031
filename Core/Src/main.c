@@ -136,7 +136,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  //Voltage calculation from ADC resolution
-	  VoltageRef = ADCChannel[ADCMode].Data *0.80566;
+	  VoltageRef = ADCChannel[ADCMode].Data *0.80566; //3300/4096
 	  //Output
 	  if(ADCMode == 0)
 	  {
