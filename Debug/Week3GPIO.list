@@ -1175,34 +1175,37 @@ int main(void)
 	  }
 	  else
 	  {
-		  ADCOutputConverted = ((VoltageRef - 760)/2.5) + 25;
- 8000dce:	edd7 7a01 	vldr	s15, [r7, #4]
- 8000dd2:	ed9f 7a18 	vldr	s14, [pc, #96]	; 8000e34 <main+0x124>
- 8000dd6:	ee77 7ac7 	vsub.f32	s15, s15, s14
- 8000dda:	ee17 0a90 	vmov	r0, s15
- 8000dde:	f7ff fb5f 	bl	80004a0 <__aeabi_f2d>
- 8000de2:	f04f 0200 	mov.w	r2, #0
- 8000de6:	4b14      	ldr	r3, [pc, #80]	; (8000e38 <main+0x128>)
- 8000de8:	f7ff fcdc 	bl	80007a4 <__aeabi_ddiv>
- 8000dec:	4602      	mov	r2, r0
- 8000dee:	460b      	mov	r3, r1
- 8000df0:	4610      	mov	r0, r2
- 8000df2:	4619      	mov	r1, r3
- 8000df4:	f04f 0200 	mov.w	r2, #0
- 8000df8:	4b10      	ldr	r3, [pc, #64]	; (8000e3c <main+0x12c>)
- 8000dfa:	f7ff f9f3 	bl	80001e4 <__adddf3>
- 8000dfe:	4602      	mov	r2, r0
- 8000e00:	460b      	mov	r3, r1
- 8000e02:	4610      	mov	r0, r2
- 8000e04:	4619      	mov	r1, r3
- 8000e06:	f7ff fdb5 	bl	8000974 <__aeabi_d2f>
- 8000e0a:	4603      	mov	r3, r0
- 8000e0c:	4a08      	ldr	r2, [pc, #32]	; (8000e30 <main+0x120>)
- 8000e0e:	6013      	str	r3, [r2, #0]
+		  ADCOutputConverted = ((VoltageRef - 760.0)/2.5) + 25.0;
+ 8000dce:	6878      	ldr	r0, [r7, #4]
+ 8000dd0:	f7ff fb66 	bl	80004a0 <__aeabi_f2d>
+ 8000dd4:	f04f 0200 	mov.w	r2, #0
+ 8000dd8:	4b16      	ldr	r3, [pc, #88]	; (8000e34 <main+0x124>)
+ 8000dda:	f7ff fa01 	bl	80001e0 <__aeabi_dsub>
+ 8000dde:	4602      	mov	r2, r0
+ 8000de0:	460b      	mov	r3, r1
+ 8000de2:	4610      	mov	r0, r2
+ 8000de4:	4619      	mov	r1, r3
+ 8000de6:	f04f 0200 	mov.w	r2, #0
+ 8000dea:	4b13      	ldr	r3, [pc, #76]	; (8000e38 <main+0x128>)
+ 8000dec:	f7ff fcda 	bl	80007a4 <__aeabi_ddiv>
+ 8000df0:	4602      	mov	r2, r0
+ 8000df2:	460b      	mov	r3, r1
+ 8000df4:	4610      	mov	r0, r2
+ 8000df6:	4619      	mov	r1, r3
+ 8000df8:	f04f 0200 	mov.w	r2, #0
+ 8000dfc:	4b0f      	ldr	r3, [pc, #60]	; (8000e3c <main+0x12c>)
+ 8000dfe:	f7ff f9f1 	bl	80001e4 <__adddf3>
+ 8000e02:	4602      	mov	r2, r0
+ 8000e04:	460b      	mov	r3, r1
+ 8000e06:	4610      	mov	r0, r2
+ 8000e08:	4619      	mov	r1, r3
+ 8000e0a:	f7ff fdb3 	bl	8000974 <__aeabi_d2f>
+ 8000e0e:	4603      	mov	r3, r0
+ 8000e10:	4a07      	ldr	r2, [pc, #28]	; (8000e30 <main+0x120>)
+ 8000e12:	6013      	str	r3, [r2, #0]
 	  ButtonState[0] = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
- 8000e10:	e790      	b.n	8000d34 <main+0x24>
- 8000e12:	bf00      	nop
- 8000e14:	f3af 8000 	nop.w
+ 8000e14:	e78e      	b.n	8000d34 <main+0x24>
+ 8000e16:	bf00      	nop
  8000e18:	7af64064 	.word	0x7af64064
  8000e1c:	3fe9c7f7 	.word	0x3fe9c7f7
  8000e20:	40020800 	.word	0x40020800
@@ -1210,7 +1213,7 @@ int main(void)
  8000e28:	20000058 	.word	0x20000058
  8000e2c:	2000002c 	.word	0x2000002c
  8000e30:	20000054 	.word	0x20000054
- 8000e34:	443e0000 	.word	0x443e0000
+ 8000e34:	4087c000 	.word	0x4087c000
  8000e38:	40040000 	.word	0x40040000
  8000e3c:	40390000 	.word	0x40390000
 

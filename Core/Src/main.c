@@ -144,7 +144,7 @@ int main(void)
 	  }
 	  else
 	  {
-		  ADCOutputConverted = ((VoltageRef - 760)/2.5) + 25;
+		  ADCOutputConverted = ((VoltageRef - 760.0)/2.5) + 25.0;
 	  }
   }
   /* USER CODE END 3 */
